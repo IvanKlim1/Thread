@@ -70,10 +70,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = edited.value?.copy(content = text)
     }
 
-    fun likeById(id: Long) {
-        thread { repository.likeById(id) }
+    fun likeById(post: Post) {
+        if(post.likedByMe) thread {
+            repository.unlikeById(post.id)
+            loadPosts()
+        } else thread {
+            repository.likeById(post.id)
+            loadPosts()
+        }
     }
-
     fun removeById(id: Long) {
         thread {
             // Оптимистичная модель
