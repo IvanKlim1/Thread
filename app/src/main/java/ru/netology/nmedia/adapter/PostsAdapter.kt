@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
@@ -38,7 +39,6 @@ class PostViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
-        
         binding.apply {
             author.text = post.author
             published.text = post.published
@@ -47,10 +47,11 @@ class PostViewHolder(
             like.isChecked = post.likedByMe
             like.text = "${post.likes}"
             val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
+            val context = binding.avatar.context
+
             Glide.with(binding.avatar)
                 .load(url)
-                .transform(new CenterCrop(context), new GlideRoundTransform(context,10))
-//                .circleCrop()
+                .circleCrop()
             .placeholder(R.drawable.ic_loading_100dp)
             .error(R.drawable.ic_error_100dp)
             .timeout(10_000)

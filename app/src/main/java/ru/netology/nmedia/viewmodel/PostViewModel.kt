@@ -6,8 +6,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
 import ru.netology.nmedia.util.SingleLiveEvent
-import java.io.IOException
-import kotlin.concurrent.thread
+
 
 private val empty = Post(
     id = 0,
@@ -25,13 +24,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val _data = MutableLiveData(FeedModel())
     val data: LiveData<FeedModel>
         get() = _data
-    val edited = MutableLiveData(empty)
+    private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
     init {
         loadPosts()
+    }
+    fun edit(post: Post) {
+        edited.value = post
+    }
+
+    fun changeContent(content: String) {
+        val text = content.trim()
+        if (edited.value?.content == text) {
+            return
+        }
+        edited.value = edited.value?.copy(content = text)
     }
 
     fun loadPosts() {
@@ -76,7 +86,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         })
     }
-    fun unLikeById(id: Long) {
+    private fun unLikeById(id: Long) {
         repository.unLikeByIdAsync(id, object : PostRepository.PostCallback<Post> {
             override fun onSuccess(value: Post) {
                 _data.postValue(
