@@ -2,6 +2,7 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
+import retrofit2.Response.error
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -18,7 +19,7 @@ private val empty = Post(
     published = ""
 )
 
-class PostViewModel(application: Application) : AndroidViewModel(application) {
+class PostViewModel(application: Application, var errorMessage: Any) : AndroidViewModel(application) {
     // упрощённый вариант
     private val repository: PostRepository = PostRepositoryImpl()
     private val _data = MutableLiveData(FeedModel())
@@ -127,5 +128,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _data.postValue(_data.value?.copy(posts = old))
             }
         })
+    }
+    private fun myError(e: Exception) {
+        e.message?.let { it ->
+            _data.postValue(FeedModel(error = false))
+            errorMessage = when (it) {
+                "500" -> "Ошибка сервера"
+                "404", "HTTP 404 " -> "Страница/пост не найдены"
+                else -> "Ошибка соединения"
+            }
+        }
     }
 }
