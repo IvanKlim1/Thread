@@ -2,7 +2,6 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import retrofit2.Response.error
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -48,7 +47,7 @@ class PostViewModel(application: Application, var errorMessage: Any) : AndroidVi
     fun loadPosts() {
         _data.value = FeedModel(loading = true)
         repository.getAllAsync(object : PostRepository.PostCallback<List<Post>> {
-            override fun onSuccess(value: List<Post>) {
+            override fun onSuccess(value: Post) {
                 _data.postValue(FeedModel(posts = value, empty = value.isEmpty()))
             }
 
@@ -122,7 +121,7 @@ class PostViewModel(application: Application, var errorMessage: Any) : AndroidVi
             )
         )
         repository.removeByIdAsync(id, object : PostRepository.PostCallback<Unit> {
-            override fun onSuccess(value: Unit) {}
+            override fun onSuccess(value: Post) {}
 
             override fun onError(e: Exception) {
                 _data.postValue(_data.value?.copy(posts = old))
