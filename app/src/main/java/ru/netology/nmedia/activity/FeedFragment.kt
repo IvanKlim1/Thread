@@ -58,7 +58,17 @@ class FeedFragment : Fragment() {
         )
 
         binding.list.adapter = adapter
+
+        viewModel.newerCount.observe(viewLifecycleOwner){
+            binding.newerPosts.isVisible = it > 0
+            binding.newerPosts.text =  "${getString(R.string.newer_posts)} - "+
+                    " ${viewModel.newerCount.value}"
+        }
+
+
+
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
+
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
@@ -67,8 +77,13 @@ class FeedFragment : Fragment() {
                     .show()
             }
         }
+
         viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.posts)
+            val viewedPosts = state.posts.filter{it.viewed}
+            val notTopPosition = adapter.itemCount > 0 && adapter.itemCount < state.posts.size
+            adapter.submitList(viewedPosts){
+                if(notTopPosition && !binding.newerPosts.isVisible) binding.list.smoothScrollToPosition(0)
+            }
             binding.emptyText.isVisible = state.empty
         }
 
@@ -76,6 +91,10 @@ class FeedFragment : Fragment() {
             viewModel.refreshPosts()
         }
 
+        binding.newerPosts.setOnClickListener {
+            binding.newerPosts.isVisible = false
+            viewModel.markNewerPostsViewed()
+        }
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
