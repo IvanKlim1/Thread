@@ -16,7 +16,6 @@
             android:padding="0dp"
             android:text="Newer posts"
             android:visibility="invisible"
-            app:backgroundTint="@color/purple_700"
             app:icon="@drawable/ic_baseline_arrow_upward_24"
             app:iconGravity="start"
             app:layout_constraintEnd_toEndOf="parent"

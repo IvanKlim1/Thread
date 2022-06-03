@@ -68,6 +68,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(post.copy(viewed = true)))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -84,6 +85,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(body.copy(viewed = true)))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -101,6 +103,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(body.copy(viewed = true)))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

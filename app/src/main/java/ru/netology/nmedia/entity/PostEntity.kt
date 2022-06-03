@@ -21,7 +21,7 @@ data class PostEntity(
 
     companion object {
         fun fromDto(dto: Post) =
-            PostEntity(dto.id, dto.author,dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,dto.saved,dto.viewed)
+            PostEntity(dto.id, dto.author,dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,dto.viewed,dto.saved,)
 
     }
 }
